@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 import static org.openqa.selenium.OutputType.FILE;
 
 public class Shopping {
-    WebDriver driver;
+    static WebDriver driver;
 
     @Given("I m logged in to CodersLab shop page")
     public void iMLoggedInToCodersLabShop() {
@@ -64,7 +64,7 @@ public class Shopping {
         assertEquals(expectedAddress, currentAddress);
     }
 
-    public String getAddressFromPage() {
+    public static String getAddressFromPage() {
         driver.findElement(By.xpath("//*[@id=\"id-address-delivery-address-22027\"]/footer/a[1]")).click();
         String street = driver.findElement(By.xpath("//*[@id=\"delivery-address\"]/div/section/div[5]/div[1]/input")).getText();
         String city = driver.findElement(By.xpath("//*[@id=\"delivery-address\"]/div/section/div[7]/div[1]/input")).getText();

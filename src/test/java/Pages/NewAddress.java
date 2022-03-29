@@ -52,14 +52,20 @@ public class NewAddress {
     // WebElement city; @FindBy(name = "postcode") WebElement postcode; @FindBy(name = "phone") WebElement phone;
 
 
-    @And("I check if address is correct")
-    public boolean iCheckIfAddressIsCorrect() {
-        return !driver.findElements(By.cssSelector(".alert.alert-danger")).isEmpty();
+    @And("I check if address is correct {string}, {string}, ,{string}")
+    public void iCheckIfAddressIsCorrect(String arg0, String arg1, String arg2) {
+
+        String expectedAddress = String.join(arg0, arg1, arg2);
+        assertEquals(expectedAddress, iCheckAddress());
     }
-    // ALBO TAK : void iCheckIfAddressIsCorrect(String arg0, String arg1, String arg2, String arg3, String arg4, String arg5) {
-    //        String addressAsText = HotelMyAddressesPage.getAddressFromPage();
-    //        String expectedAddress = String.join(arg0,arg1,arg2,arg3,arg4,arg5);
-    //        assertEquals(expectedAddress, addressAsText);}
+
+    public String iCheckAddress() {
+        String street = driver.findElement(By.name("address1")).getText();
+        String city = driver.findElement(By.name("city")).getText();
+        String postcode = driver.findElement(By.name("postcode")).getText();
+        return String.join("\n", street, city, postcode);
+
+    }
 
     @And("I click save")
     public void iClickSave() {
@@ -72,5 +78,6 @@ public class NewAddress {
         assertEquals(arg0, valMsg);
         Thread.sleep(20);
     }
+
 }
 //        Thread.sleep(20);
