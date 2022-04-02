@@ -4,16 +4,19 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import name.finsterwalder.fileutils.FileUtils;
-import org.openqa.selenium.*;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 
-import static org.junit.Assert.*;
-import static org.openqa.selenium.OutputType.FILE;
+import static org.junit.Assert.assertEquals;
 
 public class Shopping {
     static WebDriver driver;
@@ -32,17 +35,18 @@ public class Shopping {
 
     @When("I chose product from CodersLab shop")
     public void iChoseProductFromCodersLabShop() {
-        driver.findElement(By.xpath("//*[@id=\"content\"]/section/div/article[2]/div/a/img")).click();
+        driver.findElement(By.xpath("//*[@id=\"content\"]/section/div/article[1]/div/a")).click();
     }
 
-
-    @And("I  choose the size M and quantity {string}")
-
-    public void iChooseTheSizeAndQuantity(String quantity) {
+    @And("I  choose the size M and quantity 5")
+    public void iChooseTheSizeLAndQuantity() {
         Select select = new Select(driver.findElement(By.name("group[1]")));
         select.selectByVisibleText("M");
+        driver.findElement(By.id("quantity_wanted")).click();
         driver.findElement(By.id("quantity_wanted")).clear();
-        driver.findElement(By.id("quantity_wanted")).sendKeys(quantity);
+        driver.findElement(By.id("quantity_wanted")).sendKeys("5");
+
+        //  Musiałam zmienić rozmiar na L, ponieważ M byl niedostępny w sklepie.
 
     }
 
@@ -57,19 +61,11 @@ public class Shopping {
         driver.findElement(By.xpath("//*[@id=\"main\"]/div/div[2]/div[1]/div[2]/div/a")).click();
     }
 
-    @And("I verify created address  {string},{string},{string}")
-    public void iVerifyCreatedAddress(String arg0, String arg1, String arg2) {
-        String expectedAddress = String.join("\n", arg0, arg1, arg2);
-        String currentAddress = getAddressFromPage();
-        assertEquals(expectedAddress, currentAddress);
-    }
-
-    public static String getAddressFromPage() {
-        driver.findElement(By.xpath("//*[@id=\"id-address-delivery-address-22027\"]/footer/a[1]")).click();
-        String street = driver.findElement(By.xpath("//*[@id=\"delivery-address\"]/div/section/div[5]/div[1]/input")).getText();
-        String city = driver.findElement(By.xpath("//*[@id=\"delivery-address\"]/div/section/div[7]/div[1]/input")).getText();
-        String postcode = driver.findElement(By.xpath("//*[@id=\"delivery-address\"]/div/section/div[8]/div[1]/input")).getText();
-        return String.join("\n", street, city, postcode);
+    @And("I verify created address  {string} , {string} , {string} , {string} , {string}")
+    public void iVerifyCreatedAddress(String arg0, String arg1, String arg2, String arg3, String arg4) {
+        String name = "Natalia Geller";
+        String valMsg2 = driver.findElement(By.xpath("//*[@id=\"id-address-delivery-address-22357\"]/header/label/div")).getText();
+        assertEquals(String.join("", name + "\n", arg0 + "\n", arg1 + "\n", arg2 + "\n", arg3 + "\n", arg4), valMsg2);
     }
 
     @And("I select the collection method - PrestaShop pick up in store")
@@ -92,8 +88,13 @@ public class Shopping {
 
     }
 
-    @And("I will do a screenshot with the order confirmation and the amount")
-    public void iWillDoAScreenshotWithTheOrderConfirmationAndTheAmount() {
-        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(FILE);
+    @And("I will do a screenshot")
+    public static void iWillDoAScreenshotWithTheOrderConfirmationAndTheAmount()  {
+        File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(screenshot, new File("C:\\Users\\Admin\\Desktop\\AUTOMATY\\report.jpg"));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
