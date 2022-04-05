@@ -5,10 +5,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 
@@ -46,7 +43,6 @@ public class Shopping {
         driver.findElement(By.id("quantity_wanted")).clear();
         driver.findElement(By.id("quantity_wanted")).sendKeys("5");
 
-        //  Musiałam zmienić rozmiar na L, ponieważ M byl niedostępny w sklepie.
 
     }
 
@@ -64,8 +60,9 @@ public class Shopping {
     @And("I verify created address  {string} , {string} , {string} , {string} , {string}")
     public void iVerifyCreatedAddress(String arg0, String arg1, String arg2, String arg3, String arg4) {
         String name = "Natalia Geller";
-        String valMsg2 = driver.findElement(By.xpath("//*[@id=\"id-address-delivery-address-22357\"]/header/label/div")).getText();
+        String valMsg2 = driver.findElement(By.cssSelector("div[class = address")).getText();
         assertEquals(String.join("", name + "\n", arg0 + "\n", arg1 + "\n", arg2 + "\n", arg3 + "\n", arg4), valMsg2);
+
     }
 
     @And("I select the collection method - PrestaShop pick up in store")
@@ -83,18 +80,21 @@ public class Shopping {
     }
 
     @And("I click on : order with an obligation to pay")
-    public void iClickOnOrderWithAnObligationToPay() throws InterruptedException {
+    public void iClickOnOrderWithAnObligationToPay() {
         driver.findElement(By.xpath("//*[@id=\"payment-confirmation\"]/div[1]/button")).click();
 
     }
 
     @And("I will do a screenshot")
-    public static void iWillDoAScreenshotWithTheOrderConfirmationAndTheAmount()  {
+    public static void iWillDoAScreenshotWithTheOrderConfirmationAndTheAmount() {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(0,195)", "");
         File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         try {
             FileUtils.copyFile(screenshot, new File("C:\\Users\\Admin\\Desktop\\AUTOMATY\\report.jpg"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
+
         }
     }
 }
